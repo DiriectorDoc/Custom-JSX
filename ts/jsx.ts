@@ -1,5 +1,5 @@
-export default function jsx(str: string | TemplateStringsArray): DocumentFragment {
-	let elem = document.createElement("template"),
+export default function jsx(str: string | TemplateStringsArray): Node {
+	const elem = document.createElement("div"),
 		indexes: number[] = [];
 	if(Array.isArray(str)){
 		str = str[0] as string;
@@ -9,14 +9,17 @@ export default function jsx(str: string | TemplateStringsArray): DocumentFragmen
 		}
 		elem.innerHTML = str;
 		for(let i of indexes){
-			let parent = elem.querySelector(`br[jsx-replace-index="${i}"]`)!.parentElement!,
-				children = [...parent.childNodes];
-			children[children.findIndex(e => (<Element>e).matches(`br[jsx-replace-index="${i}"]`))] = arguments[i]
-			parent.innerHTML = "";
-			parent.append(...children)
+			let br = elem.querySelector(`br[jsx-replace-index="${i}"]`)!,
+				parent = br.parentElement!;
+			parent.insertBefore(arguments[i], br);
+			parent.removeChild(br)
 		}
 	} else {
 		elem.innerHTML = str as string;
 	}
-	return elem.content;
+	if(elem.childNodes.length == 1 && elem.firstChild instanceof HTMLElement)
+		return elem.firstChild;
+	const template = document.createElement("template");
+	template.content.append(...elem.childNodes)
+	return template.content.cloneNode(true)
 }
