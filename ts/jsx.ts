@@ -21,5 +21,5 @@ export default function jsx(str: string | TemplateStringsArray): Node {
 		return elem.firstChild;
 	const template = document.createElement("template");
 	template.content.append(...elem.childNodes)
-	return template.content.cloneNode(true)
+	return template.content
 }
