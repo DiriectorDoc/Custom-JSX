@@ -1,6 +1,6 @@
 "use strict";
 globalThis.jsx = function(str){
-	const elem = document.createElement("div"), indexes = [];
+	const elem = document.createElement("template"), indexes = [];
 	if (Array.isArray(str)) {
 		str = str[0];
 		for (let i = 1; i < arguments.length; i++) {
@@ -9,7 +9,7 @@ globalThis.jsx = function(str){
 		}
 		elem.innerHTML = str;
 		for (let i of indexes) {
-			let br = elem.querySelector(`br[jsx-replace-index="${i}"]`), parent = br.parentElement;
+			const br = elem.content.querySelector(`br[jsx-replace-index="${i}"]`), parent = br.parentNode;
 			parent.insertBefore(arguments[i], br)
 			parent.removeChild(br)
 		}
@@ -17,9 +17,5 @@ globalThis.jsx = function(str){
 	else {
 		elem.innerHTML = str
 	}
-	if (elem.childNodes.length == 1 && elem.firstChild instanceof HTMLElement)
-		return elem.firstChild;
-	const template = document.createElement("template");
-	template.content.append(...elem.childNodes)
-	return template.content
+	return elem.content.childNodes.length == 1 ? elem.content.firstChild : elem.content
 }
