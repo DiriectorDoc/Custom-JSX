@@ -1,3 +1,4 @@
+export default function jsx(str: string | TemplateStringsArray, ...values: any[]): Node;
 export default function jsx(str: string | TemplateStringsArray): Node {
 	const elem = document.createElement("template"),
 		indexes: number[] = [];
